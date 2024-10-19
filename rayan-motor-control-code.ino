@@ -1,5 +1,5 @@
 // WRITTEN      | 9/5/24 TO CONTROL MULTIPLE MOTORS WITH EMG
-// LAST UPDATED | 10/19/24 RE-ADDED EMG CONTROL BECAUSE WHY WOULD YOU NEGATE THAT?
+// LAST UPDATED | 10/19/24 Cleaned up the control code a bit
 
 #include <math.h> // For the sin function
 #include <ESP32Servo.h> // For the SERVO
@@ -145,7 +145,6 @@ void Motor_pwr(int dir, int PWM_val, int PWM_pin, int in1, int in2) {
     digitalWrite(in1, HIGH);
     mini_servo.write(90);
   }
-  //mini_servo.write(90);
 }
 
 float getSetPoint(long currentTime) {
