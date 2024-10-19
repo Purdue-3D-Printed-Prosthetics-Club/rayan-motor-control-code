@@ -1,5 +1,5 @@
 // WRITTEN      | 9/5/24 TO CONTROL MULTIPLE MOTORS WITH EMG
-// LAST UPDATED | 9/19/24 TO CONTROL SERVOS WITH THE ESP
+// LAST UPDATED | 10/3/24 NEGATED EMG CONTROL TO JUST CONTINUOUSLY TURN MOTORS
 
 #include <math.h> // For the sin function
 #include <ESP32Servo.h> // For the SERVO
@@ -163,7 +163,8 @@ void motor(int targ, int pos) {
   float delta_T = ((float)(current_T - prev_T)) / 1.0e6;
   prev_T = current_T;
 
-  float err = targ - pos;
+  //float err = targ - pos;
+  float err = 1000;
   float derivative = (err - prev_err) / delta_T;
   float integral = ((err + prev_err)/2) * delta_T;
   float output = Kp * err + Ki * integral + Kd * derivative;
@@ -174,12 +175,14 @@ void motor(int targ, int pos) {
   }
 
   dir = 1;
+  /*
   if (output < targ) {
     dir = -1;
   }
   if(pwr < 300){ //if this produces unintended behavior, shoot me! -Alex
     dir = 0;
   }
+  */
 
   Motor_pwr(dir, pwr, PWM, IN1, IN2);
 
