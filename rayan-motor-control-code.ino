@@ -1,5 +1,5 @@
 // WRITTEN      | 9/5/24 TO CONTROL MULTIPLE MOTORS WITH EMG
-// LAST UPDATED | 9/19/24 TO CONTROL SERVOS WITH THE ESP
+// LAST UPDATED | 10/19/24 RE-ADDED EMG CONTROL BECAUSE WHY WOULD YOU NEGATE THAT?
 
 #include <math.h> // For the sin function
 #include <ESP32Servo.h> // For the SERVO
@@ -56,7 +56,7 @@ int counter_limit = 25;
 
 //Arm state machine variables
 bool engage_arm_clench = false;
-float clench_threshold_value = 80; // set for each person
+float clench_threshold_value = 120; // set for each person
 
 //Servo controls
 Servo mini_servo;
@@ -109,7 +109,6 @@ void loop() {
 
   motor(setPoint, pos1);
 
-  Serial.println(average_emg);
   delay(10);
 
 }
@@ -146,6 +145,7 @@ void Motor_pwr(int dir, int PWM_val, int PWM_pin, int in1, int in2) {
     digitalWrite(in1, HIGH);
     mini_servo.write(90);
   }
+  //mini_servo.write(90);
 }
 
 float getSetPoint(long currentTime) {
@@ -164,6 +164,7 @@ void motor(int targ, int pos) {
   prev_T = current_T;
 
   float err = targ - pos;
+  //float err = 1000;
   float derivative = (err - prev_err) / delta_T;
   float integral = ((err + prev_err)/2) * delta_T;
   float output = Kp * err + Ki * integral + Kd * derivative;
@@ -174,12 +175,14 @@ void motor(int targ, int pos) {
   }
 
   dir = 1;
+  
   if (output < targ) {
     dir = -1;
   }
   if(pwr < 300){ //if this produces unintended behavior, shoot me! -Alex
     dir = 0;
   }
+  
 
   Motor_pwr(dir, pwr, PWM, IN1, IN2);
 
