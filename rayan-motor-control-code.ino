@@ -109,6 +109,7 @@ void loop() {
 
   motor(setPoint, pos1);
 
+  Serial.println(average_emg);
   delay(10);
 
 }
